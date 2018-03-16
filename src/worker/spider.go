@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func Lofter(name string) {
+func Lofter(name string, cnum chan int) {
 
 	r := regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
 	url := fmt.Sprintf("http://%s.lofter.com/", name)
@@ -39,9 +39,10 @@ func Lofter(name string) {
 	}
 	w.Flush()
 	fmt.Println("Finished! Crawl %d link!", num)
+	cnum <- 1
 }
 
-func Douban(name string)  {
+func Douban(name string, cnum chan int)  {
 	urlCmp := regexp.MustCompile(`<a href="(.+?)"[^>]class="photolst_photo"`)
 	picCmp := regexp.MustCompile(`<a href="#" class="view-zoom view-zoom-out"><img src="(.+?)"`)
 	albumUrl := fmt.Sprintf("https://www.douban.com/photos/album/%s/?start=", name)
@@ -78,10 +79,10 @@ func Douban(name string)  {
 	}
 	w.Flush()
 	fmt.Println("Finished! Crawl %d link!", len(lis))
-
+	cnum <- 1
 }
 
-func Tumblr(name string) {
+func Tumblr(name string, cnum chan int) {
 	r := regexp.MustCompile(`<photo-url max-width="1280">(.+?)</photo-url>`)
 	api_url := fmt.Sprintf("https://%s.tumblr.com/api/read?type=photo&num=50&start=", name)
 	f := GetFile("tumblr_"+name)
@@ -114,5 +115,5 @@ func Tumblr(name string) {
 	}
 	w.Flush()
 	fmt.Println("Finished! Crawl %d link!", num)
-
+	cnum <- 1
 }
